@@ -33,6 +33,7 @@ dependencies:
   http: ^0.13.4
   json_serializable: ^5.0.2
   path_provider: ^2.0.5
+  random_words: ^1.0.2
 
 english_words: ^4.0.0
 # cupertino_icons: ^1.0.2

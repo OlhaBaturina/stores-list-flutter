@@ -19,7 +19,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // late Future<StoresList> storesList;
-  // late Future<fetchData> fetchData;
 
   @override
   void initState() {
@@ -32,11 +31,47 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Stores'),
-          centerTitle: true,
-        ),
-        body: Container());
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text('Stores'),
+        centerTitle: false,
+        titleTextStyle: TextStyle(
+            color: Colors.grey.shade900,
+            fontSize: 26,
+            fontWeight: FontWeight.w400),
+      ),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          return Card(
+            margin: const EdgeInsets.only(bottom: 15.0),
+
+            child: Container(
+              child: Center(
+                child: Text(
+                  "Store.name",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              height: 150.0,
+              width: MediaQuery.of(context).size.width - 100.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                image: const DecorationImage(
+                  image: NetworkImage(
+                      'https://downtown-dev.fra1.digitaloceanspaces.com/media/public/uploads/06d74d27-82a6-4c85-b3d2-819f481acfa1.jpg'),
+                  fit: BoxFit.fill,
+                ),
+              ), //BorderRadius.all
+            ), //BoxDecoration
+          );
+        },
+        itemCount: 10,
+      ),
+    );
+    //
   }
 }
 
