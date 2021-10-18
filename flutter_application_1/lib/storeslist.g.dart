@@ -19,20 +19,22 @@ Map<String, dynamic> _$StoresListToJson(StoresList instance) =>
 
 Result _$ResultFromJson(Map<String, dynamic> json) => Result(
       title: json['title'] as String,
-      pictureMedia:
-          PictureMedia.fromJson(json['pictureMedia'] as Map<String, dynamic>),
+      pictureMedia: json['picture_media'] == null
+          ? null
+          : PictureMedia.fromJson(
+              json['picture_media'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ResultToJson(Result instance) => <String, dynamic>{
       'title': instance.title,
-      'pictureMedia': instance.pictureMedia,
+      'picture_media': instance.pictureMedia,
     };
 
 PictureMedia _$PictureMediaFromJson(Map<String, dynamic> json) => PictureMedia(
-      previewUrl: json['previewUrl'] as String,
+      previewUrl: json['preview_url'] as String?,
     );
 
 Map<String, dynamic> _$PictureMediaToJson(PictureMedia instance) =>
     <String, dynamic>{
-      'previewUrl': instance.previewUrl,
+      'preview_url': instance.previewUrl,
     };

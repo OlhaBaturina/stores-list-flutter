@@ -1,7 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_application_1/storeslist.dart';
-import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -18,16 +17,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // late Future<StoresList> storesList;
-
-  @override
-  void initState() {
-    super.initState();
-    loadData();
-    // getStoresList();
-    // fetchData = getData();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,54 +30,59 @@ class _MyHomePageState extends State<MyHomePage> {
             fontSize: 26,
             fontWeight: FontWeight.w400),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.only(bottom: 15.0),
+      body: FutureBuilder<StoresList>(
+        future: getStoresList(),
+        builder: (context, snapshot) {
+          final stores = snapshot.data;
+          if (stores?.results.isEmpty ?? true) {
+            return Container(
+              alignment: Alignment.center,
+              child: Text("Loading"),
+            );
+          }
 
-            child: Container(
-              child: Center(
-                child: Text(
-                  "Store.name",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-              height: 150.0,
-              width: MediaQuery.of(context).size.width - 100.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                image: const DecorationImage(
-                  image: NetworkImage(
-                      'https://downtown-dev.fra1.digitaloceanspaces.com/media/public/uploads/06d74d27-82a6-4c85-b3d2-819f481acfa1.jpg'),
-                  fit: BoxFit.fill,
-                ),
-              ), //BorderRadius.all
-            ), //BoxDecoration
+          return ListView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              final item = stores?.results[index];
+              if (item == null) {
+                return Container();
+              }
+
+              return Card(
+                margin: const EdgeInsets.only(bottom: 15.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 100.0,
+                  height: 150.0,
+                  child: Stack(
+                    children: [
+                      item.pictureMedia?.previewUrl != null ? Container(
+                        decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image: NetworkImage(item.pictureMedia!.previewUrl!),
+                          fit: BoxFit.cover,
+                        ),
+                        ), //BorderRadius.all
+                      ) : Container(),
+                      Center(
+                        child: Text(
+                          item.title,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
+                ), //BoxDecoration
+              );
+            },
+            itemCount: stores?.results.length ?? 0,
           );
-        },
-        itemCount: 10,
+        }
       ),
     );
     //
   }
-}
-
-Future<http.Response> getData() async {
-  const url = 'https://dev.downtown.amifactory.network/api/v1/stores/';
-  return await http.get(Uri.parse(url));
-}
-
-void loadData() {
-  getData().then((response) {
-    if (response.statusCode == 200) {
-      print(response.body);
-    } else {
-      print(response.statusCode);
-    }
-  }).catchError((error) {
-    debugPrint(error.toString());
-  });
 }
